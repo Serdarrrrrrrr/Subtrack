@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>SubTrack — учёт подписок</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
+
   <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -54,6 +54,7 @@
       margin-bottom: 32px;
       padding-bottom: 20px;
       border-bottom: 1px solid var(--border);
+      gap: 16px;
     }
 
     .logo {
@@ -85,18 +86,20 @@
       background: var(--bg-card);
       padding: 4px;
       border-radius: 12px;
+      align-items: center;
     }
 
     .nav-btn {
       border: none;
       background: transparent;
-      padding: 10px 20px;
+      padding: 10px 16px;
       border-radius: 8px;
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
       color: var(--text-secondary);
       transition: all 0.2s;
+      white-space: nowrap;
     }
 
     .nav-btn:hover {
@@ -109,10 +112,15 @@
       color: var(--text-primary);
     }
 
+    #auth-user-info {
+      display: flex;
+      align-items: center;
+    }
+
     /* Stats Section */
     .stats-hero {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
       margin-bottom: 32px;
     }
@@ -178,6 +186,7 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: 20px;
+      gap: 12px;
     }
 
     .card-title {
@@ -276,6 +285,7 @@
       justify-content: space-between;
       transition: all 0.2s;
       cursor: pointer;
+      gap: 16px;
     }
 
     .subscription-item:hover {
@@ -292,6 +302,7 @@
       align-items: center;
       gap: 16px;
       flex: 1;
+      min-width: 0;
     }
 
     .subscription-icon {
@@ -304,29 +315,36 @@
       justify-content: center;
       font-size: 20px;
       font-weight: 700;
+      flex-shrink: 0;
     }
 
     .subscription-info {
       flex: 1;
+      min-width: 0;
     }
 
     .subscription-name {
       font-size: 16px;
       font-weight: 600;
       margin-bottom: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .subscription-meta {
       display: flex;
-      gap: 12px;
+      gap: 8px;
       font-size: 13px;
       color: var(--text-secondary);
+      flex-wrap: wrap;
     }
 
     .subscription-right {
       display: flex;
       align-items: center;
       gap: 16px;
+      flex-shrink: 0;
     }
 
     .subscription-amount {
@@ -338,6 +356,7 @@
     .subscription-period {
       font-size: 12px;
       color: var(--text-muted);
+      text-align: right;
     }
 
     .subscription-actions {
@@ -424,6 +443,8 @@
     input[type="text"],
     input[type="number"],
     input[type="date"],
+    input[type="email"],
+    input[type="password"],
     select,
     textarea {
       width: 100%;
@@ -499,6 +520,7 @@
       display: flex;
       gap: 12px;
       margin-top: 24px;
+      flex-wrap: wrap;
     }
 
     /* Upcoming Payments */
@@ -516,10 +538,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 16px;
     }
 
     .upcoming-info {
       flex: 1;
+      min-width: 0;
     }
 
     .upcoming-name {
@@ -536,6 +560,7 @@
       font-size: 16px;
       font-weight: 700;
       text-align: right;
+      white-space: nowrap;
     }
 
     /* Category Icons */
@@ -556,54 +581,6 @@
       opacity: 0.5;
     }
 
-    /* Toggle Switch */
-    .toggle-switch {
-      position: relative;
-      width: 44px;
-      height: 24px;
-    }
-
-    .toggle-switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .toggle-slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: var(--bg-secondary);
-      border: 1px solid var(--border);
-      transition: 0.3s;
-      border-radius: 24px;
-    }
-
-    .toggle-slider:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 2px;
-      bottom: 2px;
-      background-color: var(--text-secondary);
-      transition: 0.3s;
-      border-radius: 50%;
-    }
-
-    input:checked + .toggle-slider {
-      background: var(--accent-primary);
-      border-color: var(--accent-primary);
-    }
-
-    input:checked + .toggle-slider:before {
-      transform: translateX(20px);
-      background-color: var(--text-primary);
-    }
-
     .hidden {
       display: none !important;
     }
@@ -620,6 +597,7 @@
       margin-bottom: 16px;
       padding-bottom: 12px;
       border-bottom: 1px solid var(--border);
+      gap: 12px;
     }
 
     .category-title {
@@ -628,6 +606,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .category-count {
@@ -642,6 +621,120 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      white-space: nowrap;
+    }
+
+    /* Auth Modal */
+    #auth-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+
+      .nav-btn {
+        flex: 1 1 calc(50% - 8px);
+        text-align: center;
+      }
+
+      #auth-user-info {
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-shell {
+        padding: 16px 12px;
+      }
+
+      .card {
+        padding: 18px;
+      }
+
+      .stats-hero {
+        grid-template-columns: 1fr;
+      }
+
+      .subscription-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .subscription-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .subscription-amount,
+      .subscription-period {
+        text-align: left;
+      }
+
+      .upcoming-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .upcoming-amount {
+        text-align: left;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .btn-group {
+        flex-direction: column;
+      }
+
+      .btn,
+      .btn-secondary {
+        width: 100%;
+        text-align: center;
+      }
+
+      .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo {
+        font-size: 20px;
+      }
+
+      .stat-value {
+        font-size: 26px;
+      }
+
+      .subscription-name {
+        font-size: 15px;
+      }
+
+      .subscription-amount {
+        font-size: 16px;
+      }
     }
   </style>
 </head>
@@ -744,7 +837,7 @@
             <input type="text" class="search-input" id="search-input" placeholder="Поиск подписок..." />
           </div>
 
-          <div class="filters">
+          <div class="filters" id="subscription-filters">
             <div class="filter-chip active" data-filter="all">Все</div>
             <div class="filter-chip" data-filter="active">Активные</div>
             <div class="filter-chip" data-filter="inactive">Отключенные</div>
@@ -1001,13 +1094,11 @@
             </div>
             <div class="form-group" style="margin-bottom: 12px;">
               <label class="form-label" for="supabase-url">Supabase URL</label>
-              <input type="text" id="supabase-url" placeholder="https://xxxxx.supabase.co" 
-                     style="width: 100%; padding: 10px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary);" />
+              <input type="text" id="supabase-url" placeholder="https://xxxxx.supabase.co" />
             </div>
             <div class="form-group" style="margin-bottom: 12px;">
               <label class="form-label" for="supabase-key">Supabase Anon Key</label>
-              <input type="password" id="supabase-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." 
-                     style="width: 100%; padding: 10px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary);" />
+              <input type="password" id="supabase-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
             </div>
             <button class="btn" onclick="saveSupabaseConfig()" style="width: 100%; margin-bottom: 12px;">
               💾 Сохранить настройки
@@ -1020,7 +1111,7 @@
             <div style="background: var(--bg-secondary); padding: 12px; border-radius: 8px; font-size: 13px; color: var(--text-secondary);">
               <span id="storage-type">Локальное хранилище (LocalStorage)</span><br>
               <span style="color: var(--text-muted); font-size: 11px;">
-                Подписок: <span id="data-subscriptions-count">0</span> | 
+                Подписок: <span id="data-subscriptions-count">0</span> |
                 Расходов: <span id="data-expenses-count">0</span>
               </span>
             </div>
@@ -1099,6 +1190,7 @@
               <pre style="background: var(--bg-secondary); padding: 12px; border-radius: 8px; font-size: 11px; overflow-x: auto; margin-top: 8px; color: var(--text-secondary);"><code>-- Таблица подписок
 CREATE TABLE IF NOT EXISTS subscriptions (
   id TEXT PRIMARY KEY,
+  user_id UUID,
   name TEXT NOT NULL,
   price NUMERIC DEFAULT 0,
   currency TEXT DEFAULT 'TMT',
@@ -1117,6 +1209,7 @@ CREATE TABLE IF NOT EXISTS subscriptions (
 -- Таблица расходов
 CREATE TABLE IF NOT EXISTS expenses (
   id TEXT PRIMARY KEY,
+  user_id UUID,
   name TEXT NOT NULL,
   amount NUMERIC DEFAULT 0,
   currency TEXT DEFAULT 'TMT',
@@ -1147,7 +1240,7 @@ CREATE POLICY "Allow all operations" ON expenses
     </section>
 
     <!-- Форма входа/регистрации -->
-    <div id="auth-modal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+    <div id="auth-modal" class="hidden">
       <div class="card" style="max-width: 400px; width: 90%;">
         <div class="card-header">
           <div class="card-title">
@@ -1192,6 +1285,13 @@ CREATE POLICY "Allow all operations" ON expenses
     let currentUser = null;
     let isAuthMode = 'login'; // 'login' или 'signup'
 
+    let subscriptions = [];
+    let expenses = [];
+    let currentFilter = "all";
+    let currentSearch = "";
+    let currentExpenseFilter = "all";
+    let currentExpenseSearch = "";
+
     // Загрузка конфигурации Supabase
     function loadSupabaseConfig() {
       try {
@@ -1217,24 +1317,21 @@ CREATE POLICY "Allow all operations" ON expenses
       const config = { url, key };
       localStorage.setItem(SUPABASE_CONFIG_KEY, JSON.stringify(config));
 
-      // Инициализируем Supabase
       try {
-        // Проверяем, загружена ли библиотека
         if (typeof window.supabase === 'undefined') {
           throw new Error("Библиотека Supabase не загружена. Проверьте подключение к интернету.");
         }
-        
+
         supabase = window.supabase.createClient(url, key);
         useSupabase = true;
         updateStorageStatus();
-        document.getElementById("supabase-status").innerHTML = 
+        document.getElementById("supabase-status").innerHTML =
           '<span style="color: var(--success);">✓ Подключено к Supabase</span>';
-        
-        // Тестируем подключение
+
         testSupabaseConnection();
       } catch (e) {
         console.error("Ошибка инициализации Supabase", e);
-        document.getElementById("supabase-status").innerHTML = 
+        document.getElementById("supabase-status").innerHTML =
           '<span style="color: var(--danger);">✗ Ошибка подключения: ' + e.message + '</span>';
       }
     }
@@ -1244,25 +1341,22 @@ CREATE POLICY "Allow all operations" ON expenses
       const config = loadSupabaseConfig();
       if (config && config.url && config.key) {
         try {
-          // Проверяем, загружена ли библиотека
           if (typeof window.supabase === 'undefined') {
             console.warn("Supabase библиотека не загружена, используем localStorage");
             useSupabase = false;
             return;
           }
-          
+
           supabase = window.supabase.createClient(config.url, config.key);
           useSupabase = true;
           updateStorageStatus();
-          
-          // Проверяем текущую сессию
+
           const { data: { session } } = await supabase.auth.getSession();
           if (session) {
             currentUser = session.user;
             updateAuthUI();
             await loadDataFromSupabase();
           } else {
-            // Показываем форму входа только если Supabase настроен, но пользователь не авторизован
             showAuthModal();
           }
         } catch (e) {
@@ -1270,26 +1364,24 @@ CREATE POLICY "Allow all operations" ON expenses
           useSupabase = false;
         }
       }
-      // Если Supabase не настроен, не показываем форму входа - пользователь может работать локально
     }
 
-    // Показать модальное окно входа
+    // Показать/скрыть модалку
     function showAuthModal() {
       document.getElementById("auth-modal").classList.remove("hidden");
     }
 
-    // Скрыть модальное окно входа
     function hideAuthModal() {
       document.getElementById("auth-modal").classList.add("hidden");
     }
 
-    // Переключение между входом и регистрацией
+    // Переключение режима авторизации
     function toggleAuthMode() {
       isAuthMode = isAuthMode === 'login' ? 'signup' : 'login';
       const title = document.getElementById("auth-title");
       const submitBtn = document.getElementById("auth-submit-btn");
       const toggleBtn = document.getElementById("auth-toggle-btn");
-      
+
       if (isAuthMode === 'login') {
         title.textContent = "Вход в систему";
         submitBtn.textContent = "Войти";
@@ -1322,19 +1414,11 @@ CREATE POLICY "Allow all operations" ON expenses
 
       try {
         if (isAuthMode === 'login') {
-          const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password
-          });
-          
+          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
           if (error) throw error;
           currentUser = data.user;
         } else {
-          const { data, error } = await supabase.auth.signUp({
-            email,
-            password
-          });
-          
+          const { data, error } = await supabase.auth.signUp({ email, password });
           if (error) throw error;
           currentUser = data.user;
           alert("Регистрация успешна! Проверьте email для подтверждения (если требуется).");
@@ -1349,7 +1433,7 @@ CREATE POLICY "Allow all operations" ON expenses
       }
     }
 
-    // Выход из системы
+    // Выход
     async function handleLogout() {
       if (supabase) {
         await supabase.auth.signOut();
@@ -1364,30 +1448,29 @@ CREATE POLICY "Allow all operations" ON expenses
       showAuthModal();
     }
 
-    // Обновление UI после авторизации
+    // Обновление UI авторизации
     function updateAuthUI() {
       const authInfo = document.getElementById("auth-user-info");
       const userEmail = document.getElementById("user-email");
-      
+
       if (currentUser) {
         authInfo.style.display = "flex";
         userEmail.textContent = currentUser.email;
-        // Скрываем настройки Supabase от неавторизованных (они уже авторизованы)
       } else {
         authInfo.style.display = "none";
       }
     }
 
-    // Тест подключения к Supabase
+    // Тест Supabase
     async function testSupabaseConnection() {
       if (!supabase) return;
       try {
         const { error } = await supabase.from('subscriptions').select('count').limit(1);
         if (error) throw error;
-        document.getElementById("supabase-status").innerHTML = 
+        document.getElementById("supabase-status").innerHTML =
           '<span style="color: var(--success);">✓ Подключение успешно</span>';
       } catch (e) {
-        document.getElementById("supabase-status").innerHTML = 
+        document.getElementById("supabase-status").innerHTML =
           '<span style="color: var(--warning);">⚠ Проверьте настройки и таблицы</span>';
       }
     }
@@ -1399,11 +1482,11 @@ CREATE POLICY "Allow all operations" ON expenses
           const { data, error } = await supabase
             .from('subscriptions')
             .select('*')
+            .eq('user_id', currentUser.id)
             .order('created_at', { ascending: false });
-          
+
           if (error) throw error;
-          
-          // Преобразуем данные из Supabase в формат приложения
+
           return (data || []).map(item => ({
             id: item.id,
             name: item.name,
@@ -1420,7 +1503,6 @@ CREATE POLICY "Allow all operations" ON expenses
           }));
         } catch (e) {
           console.error("Ошибка загрузки из Supabase", e);
-          // Fallback на localStorage
           return loadSubscriptionsLocal();
         }
       }
@@ -1444,10 +1526,8 @@ CREATE POLICY "Allow all operations" ON expenses
     async function saveSubscriptions(list) {
       if (useSupabase && supabase && currentUser) {
         try {
-          // Удаляем все существующие записи пользователя
-          await supabase.from('subscriptions').delete().neq('user_id', currentUser.id);
-          
-          // Вставляем новые записи
+          await supabase.from('subscriptions').delete().eq('user_id', currentUser.id);
+
           if (list.length > 0) {
             const dataToInsert = list.map(item => ({
               id: item.id,
@@ -1470,7 +1550,6 @@ CREATE POLICY "Allow all operations" ON expenses
           }
         } catch (e) {
           console.error("Ошибка сохранения в Supabase", e);
-          // Fallback на localStorage
           saveSubscriptionsLocal(list);
         }
       } else {
@@ -1489,11 +1568,11 @@ CREATE POLICY "Allow all operations" ON expenses
           const { data, error } = await supabase
             .from('expenses')
             .select('*')
+            .eq('user_id', currentUser.id)
             .order('created_at', { ascending: false });
-          
+
           if (error) throw error;
-          
-          // Преобразуем данные из Supabase в формат приложения
+
           return (data || []).map(item => ({
             id: item.id,
             name: item.name,
@@ -1529,10 +1608,8 @@ CREATE POLICY "Allow all operations" ON expenses
     async function saveExpenses(list) {
       if (useSupabase && supabase && currentUser) {
         try {
-          // Удаляем все существующие записи пользователя
-          await supabase.from('expenses').delete().neq('user_id', currentUser.id);
-          
-          // Вставляем новые записи
+          await supabase.from('expenses').delete().eq('user_id', currentUser.id);
+
           if (list.length > 0) {
             const dataToInsert = list.map(item => ({
               id: item.id,
@@ -1562,14 +1639,14 @@ CREATE POLICY "Allow all operations" ON expenses
       localStorage.setItem(EXPENSES_KEY, JSON.stringify(list));
     }
 
-    // Загрузка всех данных из Supabase
+    // Загрузка всех данных
     async function loadDataFromSupabase() {
       if (!useSupabase || !supabase) return;
-      
+
       try {
         subscriptions = await loadSubscriptions();
         expenses = await loadExpenses();
-        
+
         renderSubscriptionsList();
         renderExpensesList();
         renderOverview();
@@ -1579,7 +1656,7 @@ CREATE POLICY "Allow all operations" ON expenses
       }
     }
 
-    // Синхронизация с Supabase
+    // Синхронизация
     async function syncToSupabase() {
       const btn = document.getElementById("sync-btn");
       btn.disabled = true;
@@ -1588,10 +1665,7 @@ CREATE POLICY "Allow all operations" ON expenses
       try {
         await saveSubscriptions(subscriptions);
         await saveExpenses(expenses);
-        
-        // Загружаем обратно для проверки
         await loadDataFromSupabase();
-        
         alert("Данные успешно синхронизированы с Supabase!");
       } catch (e) {
         console.error("Ошибка синхронизации", e);
@@ -1606,16 +1680,15 @@ CREATE POLICY "Allow all operations" ON expenses
     function updateStorageStatus() {
       const statusEl = document.getElementById("storage-type");
       const configSection = document.getElementById("supabase-config-section");
-      
+
       if (useSupabase) {
         statusEl.textContent = "Облачное хранилище (Supabase)";
         statusEl.style.color = "var(--success)";
-        
-        // Показываем настройки Supabase только авторизованному пользователю
+
         if (currentUser) {
           configSection.style.display = "block";
         } else {
-          configSection.style.display = "none";
+          configSection.style.display = "block";
         }
       } else {
         statusEl.textContent = "Локальное хранилище (LocalStorage)";
@@ -1624,16 +1697,13 @@ CREATE POLICY "Allow all operations" ON expenses
       }
     }
 
-    let subscriptions = [];
-    let expenses = [];
-    let currentFilter = "all";
-    let currentSearch = "";
-    let currentExpenseFilter = "all";
-    let currentExpenseSearch = "";
-
     // ====== УТИЛИТЫ ======
     function generateId() {
       return "sub_" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+    }
+
+    function generateExpenseId() {
+      return "exp_" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
     }
 
     function getCategoryIcon(cat) {
@@ -1696,7 +1766,6 @@ CREATE POLICY "Allow all operations" ON expenses
       return names[cat] || "Другое";
     }
 
-    // Автоматический расчет следующего платежа
     function calculateNextPayment(startDate, period) {
       if (!startDate) return null;
       const start = new Date(startDate);
@@ -1720,7 +1789,6 @@ CREATE POLICY "Allow all operations" ON expenses
       return next.toISOString().split('T')[0];
     }
 
-    // Получить сегодняшнюю дату в формате YYYY-MM-DD
     function getTodayDate() {
       const today = new Date();
       return today.toISOString().split('T')[0];
@@ -1759,6 +1827,7 @@ CREATE POLICY "Allow all operations" ON expenses
     function formatDate(dateStr) {
       if (!dateStr) return "—";
       const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return "—";
       return date.toLocaleDateString("ru-RU", { day: "numeric", month: "short" });
     }
 
@@ -1781,7 +1850,6 @@ CREATE POLICY "Allow all operations" ON expenses
 
       let monthTmt = 0;
       let monthUsd = 0;
-
       const upcoming = [];
 
       for (const sub of active) {
@@ -1834,7 +1902,6 @@ CREATE POLICY "Allow all operations" ON expenses
         }
       }
 
-      // По категориям
       renderCategories();
     }
 
@@ -1878,14 +1945,13 @@ CREATE POLICY "Allow all operations" ON expenses
       }
     }
 
-    // ====== РЕНДЕР СПИСКА ПОДПИСОК ======
+    // ====== СПИСОК ПОДПИСОК ======
     function renderSubscriptionsList() {
       const container = document.getElementById("subscriptions-container");
       const empty = document.getElementById("subscriptions-empty");
 
       let filtered = [...subscriptions];
 
-      // Фильтр по статусу
       if (currentFilter === "active") {
         filtered = filtered.filter(s => s.active !== false);
       } else if (currentFilter === "inactive") {
@@ -1894,7 +1960,6 @@ CREATE POLICY "Allow all operations" ON expenses
         filtered = filtered.filter(s => s.category === currentFilter);
       }
 
-      // Поиск
       if (currentSearch) {
         const searchLower = currentSearch.toLowerCase();
         filtered = filtered.filter(s =>
@@ -1903,7 +1968,6 @@ CREATE POLICY "Allow all operations" ON expenses
         );
       }
 
-      // Сортировка
       filtered.sort((a, b) => {
         if (!a.nextPaymentDate && !b.nextPaymentDate) return 0;
         if (!a.nextPaymentDate) return 1;
@@ -1953,7 +2017,6 @@ CREATE POLICY "Allow all operations" ON expenses
             </div>
           `;
 
-          // Переключение активности
           item.addEventListener("click", (e) => {
             if (e.target.closest(".btn-icon")) return;
             toggleSubscription(sub.id);
@@ -1974,7 +2037,7 @@ CREATE POLICY "Allow all operations" ON expenses
       }
     }
 
-    // ====== УПРАВЛЕНИЕ ФОРМОЙ ======
+    // ====== ФОРМА ПОДПИСОК ======
     function clearForm() {
       document.getElementById("sub-id").value = "";
       document.getElementById("sub-name").value = "";
@@ -1993,7 +2056,6 @@ CREATE POLICY "Allow all operations" ON expenses
       document.getElementById("submit-btn").textContent = "Сохранить";
     }
 
-    // Обновление следующего платежа при изменении даты начала или периода
     function updateNextPaymentDate() {
       const startDate = document.getElementById("sub-start-date").value;
       const period = document.getElementById("sub-period").value;
@@ -2013,7 +2075,8 @@ CREATE POLICY "Allow all operations" ON expenses
       document.getElementById("sub-currency").value = sub.currency || "TMT";
       document.getElementById("sub-period").value = sub.period || "monthly";
       document.getElementById("sub-start-date").value = sub.startDate || getTodayDate();
-      document.getElementById("sub-next-date").value = sub.nextPaymentDate || calculateNextPayment(sub.startDate || getTodayDate(), sub.period || "monthly");
+      document.getElementById("sub-next-date").value =
+        sub.nextPaymentDate || calculateNextPayment(sub.startDate || getTodayDate(), sub.period || "monthly");
       document.getElementById("sub-category").value = sub.category || "entertainment";
       document.getElementById("sub-payment-method").value = sub.paymentMethod || "card";
       document.getElementById("sub-auto").checked = !!sub.auto;
@@ -2034,99 +2097,17 @@ CREATE POLICY "Allow all operations" ON expenses
       renderOverview();
     }
 
-    // ====== ОБРАБОТЧИКИ СОБЫТИЙ ======
-    // Обработчики для автоматического расчета даты
-    document.getElementById("sub-start-date").addEventListener("change", updateNextPaymentDate);
-    document.getElementById("sub-period").addEventListener("change", updateNextPaymentDate);
-
-    document.getElementById("subscription-form").addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const id = document.getElementById("sub-id").value || generateId();
-      const name = document.getElementById("sub-name").value.trim();
-      const price = document.getElementById("sub-price").value.trim() || "0";
-      const currency = document.getElementById("sub-currency").value;
-      const period = document.getElementById("sub-period").value;
-      const startDate = document.getElementById("sub-start-date").value || getTodayDate();
-      let nextPaymentDate = document.getElementById("sub-next-date").value;
-      // Если дата следующего платежа не указана, рассчитываем автоматически
-      if (!nextPaymentDate) {
-        nextPaymentDate = calculateNextPayment(startDate, period);
-      }
-      const category = document.getElementById("sub-category").value;
-      const paymentMethod = document.getElementById("sub-payment-method").value;
-      const auto = document.getElementById("sub-auto").checked;
-      const active = document.getElementById("sub-active").checked;
-      const note = document.getElementById("sub-note").value.trim();
-
-      if (!name) {
-        alert("Введите название подписки.");
-        return;
-      }
-
-      const existingIndex = subscriptions.findIndex(s => s.id === id);
-      const payload = {
-        id,
-        name,
-        price: Number(price) || 0,
-        currency,
-        period,
-        startDate,
-        nextPaymentDate: nextPaymentDate || null,
-        category,
-        paymentMethod,
-        auto,
-        active,
-        note,
-      };
-
-      if (existingIndex >= 0) {
-        subscriptions[existingIndex] = payload;
-      } else {
-        subscriptions.push(payload);
-      }
-
-      saveSubscriptions(subscriptions);
-      renderSubscriptionsList();
-      renderOverview();
-      clearForm();
-    });
-
-    document.getElementById("reset-btn").addEventListener("click", clearForm);
-
-    // Поиск
-    document.getElementById("search-input").addEventListener("input", (e) => {
-      currentSearch = e.target.value;
-      renderSubscriptionsList();
-    });
-
-    // Фильтры
-    document.querySelectorAll(".filter-chip").forEach(chip => {
-      chip.addEventListener("click", () => {
-        document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
-        chip.classList.add("active");
-        currentFilter = chip.getAttribute("data-filter");
-        renderSubscriptionsList();
-      });
-    });
-
-    // ====== ФУНКЦИОНАЛ РАСХОДОВ ======
-    function generateExpenseId() {
-      return "exp_" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
-    }
-
+    // ====== РАСХОДЫ ======
     function renderExpensesList() {
       const container = document.getElementById("expenses-container");
       const empty = document.getElementById("expenses-empty");
 
       let filtered = [...expenses];
 
-      // Фильтр по категории
       if (currentExpenseFilter !== "all") {
         filtered = filtered.filter(e => e.category === currentExpenseFilter);
       }
 
-      // Поиск
       if (currentExpenseSearch) {
         const searchLower = currentExpenseSearch.toLowerCase();
         filtered = filtered.filter(e =>
@@ -2135,7 +2116,6 @@ CREATE POLICY "Allow all operations" ON expenses
         );
       }
 
-      // Сортировка по дате (новые сверху)
       filtered.sort((a, b) => {
         const dateA = new Date(a.date || 0);
         const dateB = new Date(b.date || 0);
@@ -2224,12 +2204,186 @@ CREATE POLICY "Allow all operations" ON expenses
       renderExpensesList();
     }
 
-    // Делаем функции глобальными для onclick
-    window.populateExpenseFormForEdit = populateExpenseFormForEdit;
-    window.deleteExpense = deleteExpense;
-    window.clearExpenseForm = clearExpenseForm;
+    // ====== ДАННЫЕ / ИМПОРТ / ЭКСПОРТ ======
+    function updateDataCounts() {
+      document.getElementById("data-subscriptions-count").textContent = subscriptions.length;
+      document.getElementById("data-expenses-count").textContent = expenses.length;
+    }
 
-    // Обработчик формы расходов
+    function exportData() {
+      const data = {
+        version: "1.0",
+        exportDate: new Date().toISOString(),
+        subscriptions: subscriptions,
+        expenses: expenses
+      };
+
+      const json = JSON.stringify(data, null, 2);
+      const blob = new Blob([json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `subtrack-backup-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      alert("Данные успешно экспортированы!");
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+
+          if (!confirm(`Импортировать данные?\nПодписок: ${data.subscriptions?.length || 0}\nРасходов: ${data.expenses?.length || 0}\n\nЭто заменит все текущие данные!`)) {
+            return;
+          }
+
+          if (data.subscriptions && Array.isArray(data.subscriptions)) {
+            subscriptions = data.subscriptions;
+            saveSubscriptions(subscriptions);
+          }
+
+          if (data.expenses && Array.isArray(data.expenses)) {
+            expenses = data.expenses;
+            saveExpenses(expenses);
+          }
+
+          event.target.value = "";
+
+          renderSubscriptionsList();
+          renderExpensesList();
+          renderOverview();
+          updateDataCounts();
+
+          alert("Данные успешно импортированы!");
+        } catch (error) {
+          console.error("Ошибка импорта:", error);
+          alert("Ошибка при импорте данных. Проверьте формат файла.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function clearAllData() {
+      if (!confirm("Вы уверены? Это удалит ВСЕ данные без возможности восстановления!")) {
+        return;
+      }
+
+      if (!confirm("Последнее предупреждение! Все данные будут удалены навсегда!")) {
+        return;
+      }
+
+      subscriptions = [];
+      expenses = [];
+
+      saveSubscriptions(subscriptions);
+      saveExpenses(expenses);
+
+      renderSubscriptionsList();
+      renderExpensesList();
+      renderOverview();
+      updateDataCounts();
+
+      alert("Все данные удалены.");
+    }
+
+    // ====== НАВИГАЦИЯ ======
+    function switchTab(tabId) {
+      document.getElementById("tab-overview").classList.toggle("hidden", tabId !== "overview");
+      document.getElementById("tab-subscriptions").classList.toggle("hidden", tabId !== "subscriptions");
+      document.getElementById("tab-expenses").classList.toggle("hidden", tabId !== "expenses");
+      document.getElementById("tab-settings").classList.toggle("hidden", tabId !== "settings");
+
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-tab") === tabId);
+      });
+
+      if (tabId === "settings") {
+        updateDataCounts();
+      }
+    }
+
+    // ====== СЛУШАТЕЛИ СОБЫТИЙ ======
+    document.getElementById("sub-start-date").addEventListener("change", updateNextPaymentDate);
+    document.getElementById("sub-period").addEventListener("change", updateNextPaymentDate);
+
+    document.getElementById("subscription-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const id = document.getElementById("sub-id").value || generateId();
+      const name = document.getElementById("sub-name").value.trim();
+      const price = document.getElementById("sub-price").value.trim() || "0";
+      const currency = document.getElementById("sub-currency").value;
+      const period = document.getElementById("sub-period").value;
+      const startDate = document.getElementById("sub-start-date").value || getTodayDate();
+      let nextPaymentDate = document.getElementById("sub-next-date").value;
+      if (!nextPaymentDate) {
+        nextPaymentDate = calculateNextPayment(startDate, period);
+      }
+      const category = document.getElementById("sub-category").value;
+      const paymentMethod = document.getElementById("sub-payment-method").value;
+      const auto = document.getElementById("sub-auto").checked;
+      const active = document.getElementById("sub-active").checked;
+      const note = document.getElementById("sub-note").value.trim();
+
+      if (!name) {
+        alert("Введите название подписки.");
+        return;
+      }
+
+      const existingIndex = subscriptions.findIndex(s => s.id === id);
+      const payload = {
+        id,
+        name,
+        price: Number(price) || 0,
+        currency,
+        period,
+        startDate,
+        nextPaymentDate: nextPaymentDate || null,
+        category,
+        paymentMethod,
+        auto,
+        active,
+        note,
+      };
+
+      if (existingIndex >= 0) {
+        subscriptions[existingIndex] = payload;
+      } else {
+        subscriptions.push(payload);
+      }
+
+      saveSubscriptions(subscriptions);
+      renderSubscriptionsList();
+      renderOverview();
+      clearForm();
+    });
+
+    document.getElementById("reset-btn").addEventListener("click", clearForm);
+
+    document.getElementById("search-input").addEventListener("input", (e) => {
+      currentSearch = e.target.value;
+      renderSubscriptionsList();
+    });
+
+    // Фильтры подписок (только для блока подписок)
+    document.querySelectorAll("#subscription-filters .filter-chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        document.querySelectorAll("#subscription-filters .filter-chip").forEach(c => c.classList.remove("active"));
+        chip.classList.add("active");
+        currentFilter = chip.getAttribute("data-filter");
+        renderSubscriptionsList();
+      });
+    });
+
+    // Расходы
     document.getElementById("expense-form").addEventListener("submit", (e) => {
       e.preventDefault();
 
@@ -2272,13 +2426,11 @@ CREATE POLICY "Allow all operations" ON expenses
 
     document.getElementById("expense-reset-btn").addEventListener("click", clearExpenseForm);
 
-    // Поиск расходов
     document.getElementById("expense-search-input").addEventListener("input", (e) => {
       currentExpenseSearch = e.target.value;
       renderExpensesList();
     });
 
-    // Фильтры расходов
     document.querySelectorAll("#expense-filters .filter-chip").forEach(chip => {
       chip.addEventListener("click", () => {
         document.querySelectorAll("#expense-filters .filter-chip").forEach(c => c.classList.remove("active"));
@@ -2288,129 +2440,11 @@ CREATE POLICY "Allow all operations" ON expenses
       });
     });
 
-    // ====== УПРАВЛЕНИЕ ДАННЫМИ ======
-    function updateDataCounts() {
-      document.getElementById("data-subscriptions-count").textContent = subscriptions.length;
-      document.getElementById("data-expenses-count").textContent = expenses.length;
-    }
-
-    function exportData() {
-      const data = {
-        version: "1.0",
-        exportDate: new Date().toISOString(),
-        subscriptions: subscriptions,
-        expenses: expenses
-      };
-
-      const json = JSON.stringify(data, null, 2);
-      const blob = new Blob([json], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `subtrack-backup-${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      alert("Данные успешно экспортированы!");
-    }
-
-    function importData(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const data = JSON.parse(e.target.result);
-          
-          if (!confirm(`Импортировать данные?\nПодписок: ${data.subscriptions?.length || 0}\nРасходов: ${data.expenses?.length || 0}\n\nЭто заменит все текущие данные!`)) {
-            return;
-          }
-
-          if (data.subscriptions && Array.isArray(data.subscriptions)) {
-            subscriptions = data.subscriptions;
-            saveSubscriptions(subscriptions);
-          }
-
-          if (data.expenses && Array.isArray(data.expenses)) {
-            expenses = data.expenses;
-            saveExpenses(expenses);
-          }
-
-          // Очищаем input
-          event.target.value = "";
-
-          // Обновляем интерфейс
-          renderSubscriptionsList();
-          renderExpensesList();
-          renderOverview();
-          updateDataCounts();
-
-          alert("Данные успешно импортированы!");
-        } catch (error) {
-          console.error("Ошибка импорта:", error);
-          alert("Ошибка при импорте данных. Проверьте формат файла.");
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function clearAllData() {
-      if (!confirm("Вы уверены? Это удалит ВСЕ данные без возможности восстановления!")) {
-        return;
-      }
-      
-      if (!confirm("Последнее предупреждение! Все данные будут удалены навсегда!")) {
-        return;
-      }
-
-      subscriptions = [];
-      expenses = [];
-      
-      saveSubscriptions(subscriptions);
-      saveExpenses(expenses);
-
-      renderSubscriptionsList();
-      renderExpensesList();
-      renderOverview();
-      updateDataCounts();
-
-      alert("Все данные удалены.");
-    }
-
-    // Обработчик формы авторизации
+    // Авторизация форма
     document.getElementById("auth-form").addEventListener("submit", (e) => {
       e.preventDefault();
       handleAuth();
     });
-
-    // Делаем функции глобальными
-    window.exportData = exportData;
-    window.importData = importData;
-    window.clearAllData = clearAllData;
-    window.saveSupabaseConfig = saveSupabaseConfig;
-    window.syncToSupabase = syncToSupabase;
-    window.handleLogout = handleLogout;
-    window.toggleAuthMode = toggleAuthMode;
-
-    // ====== НАВИГАЦИЯ ======
-    function switchTab(tabId) {
-      document.getElementById("tab-overview").classList.toggle("hidden", tabId !== "overview");
-      document.getElementById("tab-subscriptions").classList.toggle("hidden", tabId !== "subscriptions");
-      document.getElementById("tab-expenses").classList.toggle("hidden", tabId !== "expenses");
-      document.getElementById("tab-settings").classList.toggle("hidden", tabId !== "settings");
-
-      document.querySelectorAll(".nav-btn").forEach(btn => {
-        btn.classList.toggle("active", btn.getAttribute("data-tab") === tabId);
-      });
-
-      // Обновляем счетчики при открытии настроек
-      if (tabId === "settings") {
-        updateDataCounts();
-      }
-    }
 
     document.querySelectorAll(".nav-btn").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -2424,26 +2458,40 @@ CREATE POLICY "Allow all operations" ON expenses
       document.getElementById("sub-name").focus();
     });
 
+    // Делаем функции глобальными
+    window.exportData = exportData;
+    window.importData = importData;
+    window.clearAllData = clearAllData;
+    window.saveSupabaseConfig = saveSupabaseConfig;
+    window.syncToSupabase = syncToSupabase;
+    window.handleLogout = handleLogout;
+    window.toggleAuthMode = toggleAuthMode;
+    window.populateFormForEdit = populateFormForEdit;
+    window.deleteSubscription = deleteSubscription;
+    window.populateExpenseFormForEdit = populateExpenseFormForEdit;
+    window.deleteExpense = deleteExpense;
+    window.clearExpenseForm = clearExpenseForm;
+
     // ====== ИНИЦИАЛИЗАЦИЯ ======
-    // Инициализируем Supabase
-    initSupabase();
-
-    // Загружаем конфигурацию в форму настроек
-    const config = loadSupabaseConfig();
-    if (config) {
-      document.getElementById("supabase-url").value = config.url || "";
-      document.getElementById("supabase-key").value = config.key || "";
-    }
-
-    // Устанавливаем сегодняшнюю дату при загрузке формы
-    clearForm();
-    clearExpenseForm();
-    
-    // Загружаем данные (асинхронно)
     (async () => {
+      // Supabase
+      initSupabase();
+
+      // Конфиг в форму
+      const config = loadSupabaseConfig();
+      if (config) {
+        document.getElementById("supabase-url").value = config.url || "";
+        document.getElementById("supabase-key").value = config.key || "";
+      }
+
+      // Даты/формы
+      clearForm();
+      clearExpenseForm();
+
+      // Локальные данные (если без Supabase)
       subscriptions = await loadSubscriptions();
       expenses = await loadExpenses();
-      
+
       renderSubscriptionsList();
       renderExpensesList();
       renderOverview();
