@@ -657,6 +657,10 @@
         <button class="nav-btn" data-tab="subscriptions">Подписки</button>
         <button class="nav-btn" data-tab="expenses">Расходы</button>
         <button class="nav-btn" data-tab="settings" style="margin-left: auto;">⚙️</button>
+        <div id="auth-user-info" style="margin-left: 12px; display: none;">
+          <span id="user-email" style="color: var(--text-secondary); font-size: 13px; margin-right: 8px;"></span>
+          <button class="btn" onclick="handleLogout()" style="padding: 6px 12px; font-size: 12px;">Выйти</button>
+        </div>
       </nav>
     </header>
 
@@ -989,10 +993,11 @@
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" id="supabase-config-section">
             <label class="form-label">Подключение к Supabase</label>
             <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
               Введите данные вашего Supabase проекта для синхронизации данных
+              <br><strong style="color: var(--warning);">Только для администратора!</strong>
             </div>
             <div class="form-group" style="margin-bottom: 12px;">
               <label class="form-label" for="supabase-url">Supabase URL</label>
@@ -1140,6 +1145,39 @@ CREATE POLICY "Allow all operations" ON expenses
         </div>
       </div>
     </section>
+
+    <!-- Форма входа/регистрации -->
+    <div id="auth-modal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+      <div class="card" style="max-width: 400px; width: 90%;">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-icon">🔐</div>
+            <span id="auth-title">Вход в систему</span>
+          </div>
+        </div>
+
+        <div id="auth-error" style="display: none; background: rgba(239, 68, 68, 0.2); color: var(--danger); padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 13px;"></div>
+
+        <form id="auth-form">
+          <div class="form-group">
+            <label class="form-label" for="auth-email">Email</label>
+            <input type="email" id="auth-email" placeholder="your@email.com" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="auth-password">Пароль</label>
+            <input type="password" id="auth-password" placeholder="••••••••" required />
+          </div>
+
+          <div class="btn-group" style="flex-direction: column; gap: 8px;">
+            <button type="submit" class="btn" id="auth-submit-btn">Войти</button>
+            <button type="button" class="btn btn-secondary" onclick="toggleAuthMode()" id="auth-toggle-btn">
+              Нет аккаунта? Зарегистрироваться
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -1151,6 +1189,8 @@ CREATE POLICY "Allow all operations" ON expenses
     // Supabase клиент
     let supabase = null;
     let useSupabase = false;
+    let currentUser = null;
+    let isAuthMode = 'login'; // 'login' или 'signup'
 
     // Загрузка конфигурации Supabase
     function loadSupabaseConfig() {
@@ -1200,7 +1240,7 @@ CREATE POLICY "Allow all operations" ON expenses
     }
 
     // Инициализация Supabase при загрузке
-    function initSupabase() {
+    async function initSupabase() {
       const config = loadSupabaseConfig();
       if (config && config.url && config.key) {
         try {
@@ -1214,12 +1254,127 @@ CREATE POLICY "Allow all operations" ON expenses
           supabase = window.supabase.createClient(config.url, config.key);
           useSupabase = true;
           updateStorageStatus();
-          // Загружаем данные из Supabase
-          loadDataFromSupabase();
+          
+          // Проверяем текущую сессию
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session) {
+            currentUser = session.user;
+            updateAuthUI();
+            await loadDataFromSupabase();
+          } else {
+            // Показываем форму входа только если Supabase настроен, но пользователь не авторизован
+            showAuthModal();
+          }
         } catch (e) {
           console.error("Ошибка инициализации Supabase", e);
           useSupabase = false;
         }
+      }
+      // Если Supabase не настроен, не показываем форму входа - пользователь может работать локально
+    }
+
+    // Показать модальное окно входа
+    function showAuthModal() {
+      document.getElementById("auth-modal").classList.remove("hidden");
+    }
+
+    // Скрыть модальное окно входа
+    function hideAuthModal() {
+      document.getElementById("auth-modal").classList.add("hidden");
+    }
+
+    // Переключение между входом и регистрацией
+    function toggleAuthMode() {
+      isAuthMode = isAuthMode === 'login' ? 'signup' : 'login';
+      const title = document.getElementById("auth-title");
+      const submitBtn = document.getElementById("auth-submit-btn");
+      const toggleBtn = document.getElementById("auth-toggle-btn");
+      
+      if (isAuthMode === 'login') {
+        title.textContent = "Вход в систему";
+        submitBtn.textContent = "Войти";
+        toggleBtn.textContent = "Нет аккаунта? Зарегистрироваться";
+      } else {
+        title.textContent = "Регистрация";
+        submitBtn.textContent = "Зарегистрироваться";
+        toggleBtn.textContent = "Уже есть аккаунт? Войти";
+      }
+      document.getElementById("auth-error").style.display = "none";
+    }
+
+    // Обработка входа/регистрации
+    async function handleAuth() {
+      const email = document.getElementById("auth-email").value.trim();
+      const password = document.getElementById("auth-password").value.trim();
+      const errorDiv = document.getElementById("auth-error");
+
+      if (!email || !password) {
+        errorDiv.textContent = "Заполните все поля";
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      if (!supabase) {
+        errorDiv.textContent = "Supabase не настроен. Сначала настройте подключение.";
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      try {
+        if (isAuthMode === 'login') {
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password
+          });
+          
+          if (error) throw error;
+          currentUser = data.user;
+        } else {
+          const { data, error } = await supabase.auth.signUp({
+            email,
+            password
+          });
+          
+          if (error) throw error;
+          currentUser = data.user;
+          alert("Регистрация успешна! Проверьте email для подтверждения (если требуется).");
+        }
+
+        updateAuthUI();
+        hideAuthModal();
+        await loadDataFromSupabase();
+      } catch (error) {
+        errorDiv.textContent = error.message || "Ошибка входа";
+        errorDiv.style.display = "block";
+      }
+    }
+
+    // Выход из системы
+    async function handleLogout() {
+      if (supabase) {
+        await supabase.auth.signOut();
+      }
+      currentUser = null;
+      subscriptions = [];
+      expenses = [];
+      updateAuthUI();
+      renderSubscriptionsList();
+      renderExpensesList();
+      renderOverview();
+      showAuthModal();
+    }
+
+    // Обновление UI после авторизации
+    function updateAuthUI() {
+      const authInfo = document.getElementById("auth-user-info");
+      const userEmail = document.getElementById("user-email");
+      
+      if (currentUser) {
+        authInfo.style.display = "flex";
+        userEmail.textContent = currentUser.email;
+        // Скрываем настройки Supabase от неавторизованных (они уже авторизованы)
+      } else {
+        authInfo.style.display = "none";
       }
     }
 
@@ -1239,7 +1394,7 @@ CREATE POLICY "Allow all operations" ON expenses
 
     // Загрузка подписок
     async function loadSubscriptions() {
-      if (useSupabase && supabase) {
+      if (useSupabase && supabase && currentUser) {
         try {
           const { data, error } = await supabase
             .from('subscriptions')
@@ -1287,15 +1442,16 @@ CREATE POLICY "Allow all operations" ON expenses
 
     // Сохранение подписок
     async function saveSubscriptions(list) {
-      if (useSupabase && supabase) {
+      if (useSupabase && supabase && currentUser) {
         try {
-          // Удаляем все существующие записи
-          await supabase.from('subscriptions').delete().neq('id', '');
+          // Удаляем все существующие записи пользователя
+          await supabase.from('subscriptions').delete().neq('user_id', currentUser.id);
           
           // Вставляем новые записи
           if (list.length > 0) {
             const dataToInsert = list.map(item => ({
               id: item.id,
+              user_id: currentUser.id,
               name: item.name,
               price: item.price,
               currency: item.currency,
@@ -1328,7 +1484,7 @@ CREATE POLICY "Allow all operations" ON expenses
 
     // Загрузка расходов
     async function loadExpenses() {
-      if (useSupabase && supabase) {
+      if (useSupabase && supabase && currentUser) {
         try {
           const { data, error } = await supabase
             .from('expenses')
@@ -1371,15 +1527,16 @@ CREATE POLICY "Allow all operations" ON expenses
 
     // Сохранение расходов
     async function saveExpenses(list) {
-      if (useSupabase && supabase) {
+      if (useSupabase && supabase && currentUser) {
         try {
-          // Удаляем все существующие записи
-          await supabase.from('expenses').delete().neq('id', '');
+          // Удаляем все существующие записи пользователя
+          await supabase.from('expenses').delete().neq('user_id', currentUser.id);
           
           // Вставляем новые записи
           if (list.length > 0) {
             const dataToInsert = list.map(item => ({
               id: item.id,
+              user_id: currentUser.id,
               name: item.name,
               amount: item.amount,
               currency: item.currency,
@@ -1448,12 +1605,22 @@ CREATE POLICY "Allow all operations" ON expenses
     // Обновление статуса хранилища
     function updateStorageStatus() {
       const statusEl = document.getElementById("storage-type");
+      const configSection = document.getElementById("supabase-config-section");
+      
       if (useSupabase) {
         statusEl.textContent = "Облачное хранилище (Supabase)";
         statusEl.style.color = "var(--success)";
+        
+        // Показываем настройки Supabase только авторизованному пользователю
+        if (currentUser) {
+          configSection.style.display = "block";
+        } else {
+          configSection.style.display = "none";
+        }
       } else {
         statusEl.textContent = "Локальное хранилище (LocalStorage)";
         statusEl.style.color = "var(--text-secondary)";
+        configSection.style.display = "block";
       }
     }
 
@@ -2213,12 +2380,20 @@ CREATE POLICY "Allow all operations" ON expenses
       alert("Все данные удалены.");
     }
 
+    // Обработчик формы авторизации
+    document.getElementById("auth-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      handleAuth();
+    });
+
     // Делаем функции глобальными
     window.exportData = exportData;
     window.importData = importData;
     window.clearAllData = clearAllData;
     window.saveSupabaseConfig = saveSupabaseConfig;
     window.syncToSupabase = syncToSupabase;
+    window.handleLogout = handleLogout;
+    window.toggleAuthMode = toggleAuthMode;
 
     // ====== НАВИГАЦИЯ ======
     function switchTab(tabId) {
